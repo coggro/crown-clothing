@@ -3,11 +3,11 @@ import { Switch, Route } from "react-router-dom";
 
 import "./App.css";
 
-import Header from "./Components/Header/Header.component";
-import Homepage from "./Pages/Homepage/Homepage.component";
+import HomePage from "./Pages/Homepage/Homepage.component";
 import ShopPage from "./Pages/ShopPage/ShopPage.component";
 import SignInAndSignUpPage from "./Pages/SignInAndSignUpPage/SignInAndSignUpPage.component";
-import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
+import Header from "./Components/Header/Header.component";
+import { auth } from "./firebase/firebase.utils";
 
 class App extends React.Component {
   constructor() {
@@ -21,8 +21,10 @@ class App extends React.Component {
   unsubscribeFromAuth = null;
 
   componentDidMount() {
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(async user => {
-      createUserProfileDocument(user);
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(user => {
+      this.setState({ currentUser: user });
+
+      console.log(user);
     });
   }
 
@@ -35,7 +37,7 @@ class App extends React.Component {
       <div>
         <Header currentUser={this.state.currentUser} />
         <Switch>
-          <Route exact path="/" component={Homepage} />
+          <Route exact path="/" component={HomePage} />
           <Route path="/shop" component={ShopPage} />
           <Route path="/signin" component={SignInAndSignUpPage} />
         </Switch>
